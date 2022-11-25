@@ -1,5 +1,8 @@
 # `pandoc-wrapper` 
 
+[![MIT License](https://img.shields.io/npm/l/pandoc-wrapper)](https://www.npmjs.com/package/pandoc-wrapper)
+[![NPM Registry Version](https://img.shields.io/npm/v/pandoc-wrapper))(https://www.npmjs.com/package/pandoc-wrapper)
+
 Pandoc Wrapper for NodeJS. 
 
 Requires the `pandoc` executable to be installed. Normally this is in
