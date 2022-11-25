@@ -1,0 +1,6 @@
+thing.js
+thing.txt
+node_modules/*
+*tmp
+*log
+*logs
