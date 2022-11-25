@@ -9,7 +9,12 @@ Requires the `pandoc` executable to be installed. Normally this is in
 ```sh
 sudo apt-get install pandoc   # Ubuntu (most versions of Debian)
 apk add --no-cache pandoc     # Alpine v3.17+
+
+# install the package
 npm i pandoc-wrapper
+
+# alternatively, install it directly from source
+npm i git+https://github.com/valexandersaulys/pandoc-wrapper
 ```
 
 ## Examples of Usage
@@ -32,8 +37,7 @@ pandoc.convert("/tmp/input.md", "/tmp/output.html", "html");
 Note: writing to the filestream is not practically possible in
 Synchronous execution. This is because of how [child processes in node
 work](https://nodejs.org/api/child_process.html#subprocessstdin). You
-can run it anyway even if async but a warning will be logged to
-console if you do. 
+can run it anyway even if async is enabled but a warning will be raised
 
 ```js
 const PandocJS = require("pandoc-wrapper");
@@ -42,9 +46,12 @@ const PandocJS = require("pandoc-wrapper");
   const pandoc = new PandocJS({ runAsAsync: false });
   await pandoc.sendRawStream(
       "# header",
-      "/tmp/outputStdin.html",
+      "/tmp/output.html",
       "html"
     )
+  // WARNING: you have this marked to only run sync but pushing input is always ASYNC
+  // $ cat /tmp/output.html 
+  // <h1 id="header">header</h1>
 })();
 ```
 
