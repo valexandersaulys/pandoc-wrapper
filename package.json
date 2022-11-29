@@ -1,6 +1,6 @@
 {
   "name": "pandoc-wrapper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simple Pandoc Wrapper for NodeJS",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test:watch": "mocha tests/*js --watch",
     "test:one": "mocha --watch"
   },
-  "repository": "valexandersaulys/pandoc-js",
+  "repository": "valexandersaulys/pandoc-wrapper",
   "keywords": [
     "pandoc",
     "epub",

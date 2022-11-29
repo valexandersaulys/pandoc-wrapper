@@ -50,7 +50,7 @@ class PandocJS {
     return null;
   }
 
-  convert(inputPath, outputPath, outputFormat) {
+  convert(inputPath, outputPath, outputFormat, inputFormat) {
     /**
      * Converts the path at `inputPath` to a format `outputFormat` at
      * `outputPath`
@@ -58,7 +58,10 @@ class PandocJS {
      * @arg {inputPath} str path to file
      * @arg {outputPath} str output file path after conversion
      * @arg {outputFormat} str format of converted file
+     * @arg {inputFormat} str format of input file. Optional, defaults to 'md'
+     *     if not specified.
      */
+    const _inputFormat = inputFormat ? inputFormat : "md";
     if (this.runAsAsync) {
       if (!fs.existsSync(inputPath)) {
         return new Promise((resolve, reject) => {
@@ -69,7 +72,8 @@ class PandocJS {
         "-i",
         `${inputPath}`,
         `--to=${outputFormat}`,
-        `--output=${outputPath}`
+        `--output=${outputPath}`,
+        `--from=${_inputFormat}`
       ])
         .then((_output) => this._getStdOut(_output))
         .catch((err) => this._getStdOut(err));
@@ -81,7 +85,8 @@ class PandocJS {
           "-i",
           `${inputPath}`,
           `--to=${outputFormat}`,
-          `--output=${outputPath}`
+          `--output=${outputPath}`,
+          `--from=${_inputFormat}`
         ]);
         let stdout = this._getStdOut(_output);
         return stdout;
@@ -95,7 +100,7 @@ class PandocJS {
     return null;
   }
 
-  async sendRawStream(stdin, outputPath, outputFormat) {
+  async sendRawStream(stdin, outputPath, outputFormat, inputFormat) {
     /**
      * Write `stdin` to `pandoc` in place of reading a file. Used in place of
      * reading from a file.
@@ -103,13 +108,17 @@ class PandocJS {
      * @arg {stdin} str string to push into standard input of your executable
      * @arg {outputPath} str output file path after conversion
      * @arg {outputFormat} str format of converted file
+     * @arg {inputFormat} str format of input file. Optional, defaults to 'md'
+     *     if not specified.
      */
+    const _inputFormat = inputFormat ? inputFormat : "md";
     if (!this.runAsAsync)
       console.log(
         "WARNING: you have this marked to only run sync but pushing input is always ASYNC"
       );
     const subprocess = this.run([
       `--to=${outputFormat}`,
+      `--from=${_inputFormat}`,
       `--output=${outputPath}`
     ]);
     subprocess.stdin.write(stdin + "\r\n");
