@@ -1,6 +1,6 @@
 {
   "name": "pandoc-wrapper",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Simple Pandoc Wrapper for NodeJS",
   "main": "index.js",
   "scripts": {
