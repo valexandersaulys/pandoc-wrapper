@@ -50,7 +50,6 @@ describe("Can Write and Convert Files", () => {
     }
     done();
   });
-
   it("works synchronously", () => {
     const pandoc = new PandocJS({ runAsAsync: false });
     pandoc.convert("/tmp/input.md", "/tmp/output.html", "html");
@@ -67,6 +66,18 @@ describe("Can Write and Convert Files", () => {
 `
     );
   });
+  it("accepts variable arguments on pdf (sync)", () => {
+    const pandoc = new PandocJS({ runAsAsync: false });
+    pandoc.convert(
+      "/tmp/input.md",
+      "/tmp/output.pdf",
+      "pdf",
+      null,
+      "geometry:margin=1in"
+    );
+    assert.isAbove(fs.statSync("/tmp/output.pdf").size, 0);
+  });
+
   it("works asynchronously", () => {
     const pandoc = new PandocJS({ runAsAsync: true });
     return pandoc
@@ -84,6 +95,20 @@ describe("Can Write and Convert Files", () => {
 </ul>
 `
         );
+      });
+  });
+  it("accepts variable arguments on pdf (async)", () => {
+    const pandoc = new PandocJS({ runAsAsync: true });
+    return pandoc
+      .convert(
+        "/tmp/input.md",
+        "/tmp/output.pdf",
+        "pdf",
+        null,
+        "geometry:margin=1in"
+      )
+      .then((stdout) => {
+        assert.isAbove(fs.statSync("/tmp/output.pdf").size, 0);
       });
   });
   it("throws InputFileNotFound when Sync", () => {

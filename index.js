@@ -50,7 +50,7 @@ class PandocJS {
     return null;
   }
 
-  convert(inputPath, outputPath, outputFormat, inputFormat) {
+  convert(inputPath, outputPath, outputFormat, inputFormat, variableArgument) {
     /**
      * Converts the path at `inputPath` to a format `outputFormat` at
      * `outputPath`
@@ -60,8 +60,11 @@ class PandocJS {
      * @arg {outputFormat} str format of converted file
      * @arg {inputFormat} str format of input file. Optional, defaults to 'md'
      *     if not specified.
+     * @arg {variableArgument} object optional JSON to include for variable
+     *     arguments (e.g. `-V geometry:margin=1in`, passed as "geometry:margin=1in"),
+     *     typically useful for formatting PDFs. Only accepts one variable argument.
      */
-    const _inputFormat = inputFormat ? inputFormat : "md";
+    const _inputFormat = inputFormat ? inputFormat : "gfm";
     if (this.runAsAsync) {
       if (!fs.existsSync(inputPath)) {
         return new Promise((resolve, reject) => {
@@ -72,6 +75,7 @@ class PandocJS {
         "-i",
         `${inputPath}`,
         `--to=${outputFormat}`,
+        `--variable=${variableArgument}`,
         `--output=${outputPath}`,
         `--from=${_inputFormat}`
       ])
@@ -86,12 +90,14 @@ class PandocJS {
           `${inputPath}`,
           `--to=${outputFormat}`,
           `--output=${outputPath}`,
-          `--from=${_inputFormat}`
+          `--from=${_inputFormat}`,
+          `--variable=${variableArgument}`
         ]);
         let stdout = this._getStdOut(_output);
         return stdout;
       } catch (err) {
         // skip, we handle errors elsewhere
+        console.log(err);
         let _output = err;
         let stdout = this._getStdOut(_output);
         return stdout;
@@ -100,7 +106,13 @@ class PandocJS {
     return null;
   }
 
-  async sendRawStream(stdin, outputPath, outputFormat, inputFormat) {
+  async sendRawStream(
+    stdin,
+    outputPath,
+    outputFormat,
+    inputFormat,
+    variableArgument
+  ) {
     /**
      * Write `stdin` to `pandoc` in place of reading a file. Used in place of
      * reading from a file.
@@ -110,8 +122,11 @@ class PandocJS {
      * @arg {outputFormat} str format of converted file
      * @arg {inputFormat} str format of input file. Optional, defaults to 'md'
      *     if not specified.
+     * @arg {variableArgument} object optional JSON to include for variable
+     *     arguments (e.g. `-V geometry:margin=1in`, passed as "geometry:margin=1in"),
+     *     typically useful for formatting PDFs. Only accepts one variable argument.
      */
-    const _inputFormat = inputFormat ? inputFormat : "md";
+    const _inputFormat = inputFormat ? inputFormat : "gfm";
     if (!this.runAsAsync)
       console.log(
         "WARNING: you have this marked to only run sync but pushing input is always ASYNC"
@@ -119,7 +134,8 @@ class PandocJS {
     const subprocess = this.run([
       `--to=${outputFormat}`,
       `--from=${_inputFormat}`,
-      `--output=${outputPath}`
+      `--output=${outputPath}`,
+      `--variable=${variableArgument}`
     ]);
     subprocess.stdin.write(stdin + "\r\n");
     subprocess.stdin.end();
